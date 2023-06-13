@@ -1,5 +1,3 @@
-// 2352.✅ Equal Row and Column Pairs
-
 class Solution
 {
 public:
