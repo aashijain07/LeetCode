@@ -1,22 +1,36 @@
+//Using simple recursion and memoization (T.C : We visit each state once only and we have k possible tries - O(k * n^2)
 class Solution {
 public:
-    unordered_map<string,double> mp;
-    int dir[8][8] = {{-2,-1},{-1,-2},{1,-2},{2,-1},{2,1},{1,2},{-1,2},{-2,1}};
-    double knightProbability(int n, int k, int row, int column) {
-        return find(n,k,row,column);
-    }
-    double find(int n, int moves, int r, int c) {
-        if(r<0 || r>=n || c<0 || c>=n)
-            return 0;
-        if(moves == 0)
-            return 1;
-        string key = to_string(r) + "aryan" + to_string(c) + "mittal" + to_string(moves);
-        if(mp.find(key) != mp.end())
+    unordered_map<string, double> mp;
+    vector<pair<int, int>> directions = {{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {2, -1}, {-2, 1}, {-2, -1}};
+
+    double helper( int N, int K , int row, int col ) {
+        
+        if ( row < 0 || row >= N || col < 0 || col >= N ) 
+            return 0; 
+        
+        if (K==0)
+            return 1;  //one possibility over, return now
+        
+        string key = to_string(K) + "_" + to_string(row) + "_" + to_string(col);
+        
+        if(mp.find(key) != mp.end()) 
             return mp[key];
-        double probability = 0;
-        for(int i=0; i<8; i++)
-            probability += find(n,moves-1, r+dir[i][0], c+dir[i][1])/8.0 ;
-        mp[key] = probability;
-        return mp[key];
+        
+        double ans = 0;
+        for(auto &dir : directions) {
+            int new_row = row + dir.first;
+            int new_col = col + dir.second;
+            ans += (double)helper(N, K-1, new_row, new_col);
+        }
+        
+        return mp[key] = (double)(ans/8.0); 
+    }
+    
+    
+    double knightProbability(int n, int k, int row, int column) {
+        return helper( n , k , row , column); 
     }
 };
+
+
